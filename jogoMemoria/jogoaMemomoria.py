@@ -1,36 +1,44 @@
+# Nicholas Barbosa, Gustavo Fiori e Luis Choinski
 import random
-import string
+import time
 
-alafabeto = string.ascii_uppercase
-
-
-def get(linhaIndex, colunaIndex, matrix):
-    for l in range(len(matrix)):
-        if l == linhaIndex:
-            for c in range(len(matrix[l])):
-                if c == colunaIndex:
-                    return matrix[l][c]
+alfabeto = ['A', 'B', 'C', 'D', 'E', 'F', 'F', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
+            'V', 'W', 'X', 'Y', 'Z']
 
 
-def imprimirMatrizOculta(matriz):
+def get(linha_index, coluna_index, matriz):
+    for l in range(len(matriz)):
+        if l == linha_index:
+            for c in range(len(matriz[l])):
+                if c == coluna_index:
+                    return matriz[l][c]
+
+
+def imprimir_matriz_oculta(matriz):
     print("---Matriz de exibição--- \n %s" % matriz)
 
-def frequenciaLetra(letra,matriz):
-    vezes=0
+
+def frequencia_letra(letra, matriz):
+    vezes = 0
     for l in range(len(matriz)):
         for c in range(len(matriz[l])):
             if matriz[l][c] == letra:
-                vezes = vezes +1
+                vezes = vezes + 1
     return vezes
-def getMatrizCombinacoes(matriz):
-    combinacoes:int = 0
+
+
+def gera_matriz_combinacoes(matriz):
+    print("---Gerando combinações---")
+    combinacoes: int = 0
     for l in range(len(matriz)):
         for c in range(len(matriz[l])):
-            if frequenciaLetra(matriz[l][c],matriz) == 2:
-                combinacoes=combinacoes+1
+            if frequencia_letra(matriz[l][c], matriz) == 2:
+                combinacoes = combinacoes + 1
+
     return combinacoes
 
-def criaMatriz(numero_linhas, numero_colunas, oculta):
+
+def cria_matriz(numero_linhas, numero_colunas, oculta):
     matriz = []
     for l in range(numero_linhas):
         matriz.append([])
@@ -38,64 +46,88 @@ def criaMatriz(numero_linhas, numero_colunas, oculta):
             if oculta == 1:
                 matriz[l].append("#")
             else:
-                matriz[l].append(geraCharacter())
+                matriz[l].append(gera_character())
 
     return matriz
 
 
-def geraCharacter():
-    return ''.join(random.choice(alafabeto) for i in range(1))
+def gera_character():
+    posicao_aleatoria: int = random.randint(0, 25)
+    return alfabeto[posicao_aleatoria]
 
 
-def iniciar(matrizOculta, matriz):
-    vezesMatrizExibidas: int = 0
-    respostasCertas: int = 0
-    totalCombinacoes:int= getMatrizCombinacoes(matriz)
-    print("Existem %s combinações. Acerte todas para completar o jogo!"%totalCombinacoes)
-    while respostasCertas < totalCombinacoes:
-        if vezesMatrizExibidas <= 2:
-            exibirResposta: int = int((input("Deseja exibir matriz original?1-sim, 2-não")))
-            if exibirResposta == 1:
-                vezesMatrizExibidas = vezesMatrizExibidas + 1
-                print(matriz)
-        linhaPrimeiroQuadrante: int = int(input("Digite a linha do primeiro quadrante. Baseado em 0!"))
-        colunaPrimeiroQuadrante: int = int(input("Digite a coluna do primeiro quadrante. Baseado em 0!"))
-        letra = get(linhaPrimeiroQuadrante, colunaPrimeiroQuadrante, matriz)
-        print("Letra %s! " % letra)
-        linhaSegundoQuadrante: int = int(input("Digite a linha do segundo quadrante. Baseado em 0!"))
-        colunaSegundoQuadrante: int = int(input("Digite a coluna do segundo quadrante. Baseado em 0!"))
-        letraSegundoQuadrante = get(linhaSegundoQuadrante, colunaSegundoQuadrante, matriz)
-        if letra == letraSegundoQuadrante:
-            print("Você acertou!!")
-            matrizOculta[linhaPrimeiroQuadrante][colunaPrimeiroQuadrante] = letra
-            matrizOculta[linhaSegundoQuadrante][colunaSegundoQuadrante] = letraSegundoQuadrante
-            print("---Matriz de exibição--- \n %s" % matrizOculta)
-            respostasCertas = respostasCertas + 1
-            print("Restam %s pares para completar o jogo!" % (totalCombinacoes - respostasCertas))
-        else:
-            print("Você errou!")
-    print("Jogo completado com sucesso!")
+def iniciar(matriz_oculta, matriz):
+    vezes_matriz_exibida: int = 0
+    respostas_certas: int = 0
+    total_combinacoes: int = gera_matriz_combinacoes(matriz)
+    if total_combinacoes >= 1:
+        print("Existem %s combinações. Acerte todas para completar o jogo!" % total_combinacoes)
+        while respostas_certas < total_combinacoes:
+            encerar: int = int(input("Deseja encerrar o jogo?1-Sim, 2-Não"))
+            if encerar == 1:
+                print("Encerrando jogo...")
+                break
+            if vezes_matriz_exibida <= 2:
+                exibir_resposta: int = int((input("Deseja exibir matriz original?1-sim, 2-não")))
+                if exibir_resposta == 1:
+                    vezes_matriz_exibida = vezes_matriz_exibida + 1
+                    print("Matriz estará visivel por apenas 3 segundos!")
+                    print(matriz)
+                    time.sleep(3)
+                    print("\n" * 100)
+            linha_primeiro_quadrante: int = int(input("Digite a linha do primeiro quadrante. Baseado em 0!"))
+            coluna_primeiro_quadrante: int = int(input("Digite a coluna do primeiro quadrante. Baseado em 0!"))
+            letra = get(linha_primeiro_quadrante, coluna_primeiro_quadrante, matriz)
+            print("Letra %s! " % letra)
+            linha_segundo_quadrante: int = int(
+                input("Digite a linha do segundo quadrante. Baseado em 0! Ou -1 para sair!"))
+            coluna_segundo_quadrante: int = int(
+                input("Digite a coluna do segundo quadrante. Baseado em 0! Ou -1 para sair!"))
+            if linha_segundo_quadrante == linha_primeiro_quadrante & coluna_primeiro_quadrante == coluna_segundo_quadrante:
+                print(
+                    "Jogo será finalizado por tentativa de trapaça! \nMotivo: deslacamentos de quadrantes. Jogue limpo!")
+                break;
+            letraSegundoQuadrante = get(linha_segundo_quadrante, coluna_segundo_quadrante, matriz)
+            if letra == letraSegundoQuadrante:
+                print("Você acertou!!")
+                matriz_oculta[linha_primeiro_quadrante][coluna_primeiro_quadrante] = letra
+                matriz_oculta[linha_segundo_quadrante][coluna_segundo_quadrante] = letraSegundoQuadrante
+                print("---Matriz de exibição--- \n %s" % matriz_oculta)
+                respostas_certas = respostas_certas + 1
+                print("Restam %s pares para completar o jogo!" % (total_combinacoes - respostas_certas))
+            else:
+                print("Você errou!")
+            print("Jogo finalizado!")
+    else:
+        print("Rodada bonus! Você está com sorte! Não foram geradas combinações. Tente novamente!1-Sim,2-Não")
+        tentar_novamente: int = int(input())
+        if tentar_novamente == 1:
+            iniciar(matriz_oculta, matriz)
 
 
 def facil():
     print("---Iniciando jogo na dificuldade fácil---")
-    matriz4por4 = criaMatriz(4, 4, 0)
-    matriz4por4Oculta = criaMatriz(4, 4, 1)
-    imprimirMatrizOculta(matriz4por4Oculta)
-    iniciar(matriz4por4Oculta, matriz4por4)
+    matriz4por4 = cria_matriz(4, 4, 0)
+    matriz4por4_oculta = cria_matriz(4, 4, 1)
+    imprimir_matriz_oculta(matriz4por4_oculta)
+    iniciar(matriz4por4_oculta, matriz4por4)
+
+
 def medio():
     print("---Iniciando jogo na dificuldade média...---")
-    matriz8por8 = criaMatriz(8,8,0)
-    matriz8por8Oculta = criaMatriz(8,8,1)
-    imprimirMatrizOculta(matriz8por8Oculta)
-    iniciar(matriz8por8Oculta, matriz8por8)
+    matriz8por8 = cria_matriz(8, 8, 0)
+    matriz8por8_oculta = cria_matriz(8, 8, 1)
+    imprimir_matriz_oculta(matriz8por8_oculta)
+    iniciar(matriz8por8_oculta, matriz8por8)
+
 
 def dificil():
     print("---Iniciando jogo na dificuldade difícil...---")
-    matriz10por10 = criaMatriz(10, 10, 0)
-    matriz10por1Oculta = criaMatriz(10, 10, 1)
-    imprimirMatrizOculta(matriz10por1Oculta)
-    iniciar(matriz10por1Oculta, matriz10por10)
+    matriz10por10 = cria_matriz(10, 10, 0)
+    matriz10por1_oculta = cria_matriz(10, 10, 1)
+    imprimir_matriz_oculta(matriz10por1_oculta)
+    iniciar(matriz10por1_oculta, matriz10por10)
+
 
 dificuldade: int = int(input("Selecione a dificuldade. 1-Fácil, 2-Médio ou 3-Difícil"));
 if dificuldade == 1:
