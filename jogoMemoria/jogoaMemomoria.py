@@ -1,4 +1,5 @@
 # Nicholas Barbosa, Gustavo Fiori e Luis Choinski
+# GitHub: https://github.com/Nicholas-Barbosa/jogomemoria-pucpr/blob/master/jogoMemoria/jogoaMemomoria.py
 import random
 import time
 
