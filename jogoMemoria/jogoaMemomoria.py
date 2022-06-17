@@ -97,7 +97,7 @@ def iniciar(matriz_oculta, matriz):
                 print("Restam %s pares para completar o jogo!" % (total_combinacoes - respostas_certas))
             else:
                 print("Você errou!")
-            print("Jogo finalizado!")
+        print("Jogo finalizado!")
     else:
         print("Rodada bonus! Você está com sorte! Não foram geradas combinações. Tente novamente!1-Sim,2-Não")
         tentar_novamente: int = int(input())
